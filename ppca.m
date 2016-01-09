@@ -1,38 +1,61 @@
-clear
+function ppca_example
+    filename = 'data/virus3.dat';
+    T = importdata(filename);
+    q = 2;
+    [W, sigma] = ppca_from_data(T, q);
+    X = ppca_latent(T, W, sigma);
+    ppca_plot2d(X);
+endfunction
 
-filename = 'data/virus3.dat';
-T = importdata(filename);
-[N, d] = size(T);
+function [W, sigma] = ppca_from_data(T, q)
+    [N, d] = size(T);
+    
+    for j = 1:d
+        mu(j) = mean(T(:,j));
+    endfor
+    
+    S = zeros(d);
+    for n = 1:N
+        S = S + (T(n,:)' - mu') * (T(n,:)' - mu')';
+    endfor
+    S = 1/N * S;
 
-for j = 1:d
-    mu(j) = mean(T(:,j));
-endfor
+    [W, sigma] = ppca_from_covariance(S, d, q);
+endfunction
 
-S = zeros(d);
-for n = 1:N
-    S = S + (T(n,:)' - mu') * (T(n,:)' - mu')';
-endfor
-S = 1/N * S;
+function X = ppca_latent(T, W, sigma)
+    [N, d] = size(T);
+    [~, q] = size(W);
 
-[Wpca, lambda] = eig(S);
-lambda = diag(lambda);
-[lambda, i] = sort(lambda, 'descend');
-Wpca = Wpca(:,i);
-q = 2;
+    M = W'*W + sigma^2 * eye(q);
+    
+    for j = 1:d
+        mu(j) = mean(T(:,j));
+    endfor
+    
+    for i = 1:N
+        Tnorm(i,:) = T(i,:) - mu;
+    endfor
+    X = inv(M) * W' * Tnorm';
+endfunction
 
-U = Wpca(:,1:q);
-L = diag(lambda)(1:q, 1:q);
-sigma = sqrt(1/(d-q) * sum(lambda(q+1:d)));
-W = U * sqrt(L - sigma^2*eye(q));
+function ppca_plot2d(X)
+    [~, N] = size(X);
+    plot(X(1,:), X(2,:), "linestyle", 'none');
+    for i = 1:N
+        text(X(1,i), X(2,i), num2str(i));
+    endfor
+endfunction
 
-M = W'*W + sigma^2 * eye(q);
-for i = 1:N
-    Tnorm(i,:) = T(i,:) - mu;
-endfor
-
-X = inv(M) * W' * Tnorm';
-%disp(X);
-plot(X(1,:), X(2,:), "linestyle", 'none');
-for i = 1:N
-    text(X(1,i), X(2,i), num2str(i));
-endfor
+function [W, sigma] = ppca_from_covariance(S, d, q)
+    [Wpca, lambda] = eig(S);
+    lambda = diag(lambda);
+    [lambda, i] = sort(lambda, 'descend');
+    Wpca = Wpca(:,i);
+    q = 2;
+    
+    U = Wpca(:,1:q);
+    L = diag(lambda)(1:q, 1:q);
+    sigma = sqrt(1/(d-q) * sum(lambda(q+1:d)));
+    W = U * sqrt(L - sigma^2*eye(q));
+endfunction
