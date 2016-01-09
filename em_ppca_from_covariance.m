@@ -1,28 +1,3 @@
-function em_ppca_example
-    filename = 'data/virus3.dat';
-    T = importdata(filename);
-    q = 2;
-    
-    [W, sigma] = em_ppca_from_data(T, q);
-    X = ppca_latent(T, W, sigma);
-    ppca_plot2d(X);
-endfunction
-
-function [W, sigma] = em_ppca_from_data(T, q)
-    [N, d] = size(T);
-
-    for j = 1:d
-        mu(j) = mean(T(:,j));
-    endfor
-    
-    S = zeros(d);
-    for n = 1:N
-        S = S + (T(n,:)' - mu') * (T(n,:)' - mu')';
-    endfor
-    S = 1/N * S;
-    [W, sigma] = em_ppca_from_covariance(S, q);
-endfunction
-
 function [W, sigma] = em_ppca_from_covariance(S, q)
     [d, ~] = size(S);
     
