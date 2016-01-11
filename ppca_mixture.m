@@ -6,7 +6,7 @@ function ppca_mixture
     q = 2;  % dimension of ppcas
 
     % init
-    % initializing the posteriors
+    % initializing the posteriors (p(i|t_n), indexed by (n, i). R in text)
     for n=1:N
         k = randi(M);
         for i=1:M
@@ -17,7 +17,6 @@ function ppca_mixture
             endif
         endfor
     endfor
-    posteriors_beg = posteriors;
     % precision for convergence checking
     epsilon = 0.01;
     entered = false;
@@ -57,15 +56,13 @@ function ppca_mixture
             break;
         endif
 
-        entered = true;
-
         % replacing old parameter values
         priors = new_priors;
         mus = new_mus;
         Ws = new_Ws;
         sigmas = new_sigmas;
 
-        % computing the likelihoods (p(t_n, i))
+        % computing the likelihoods (p(t_n|i))
         for i=1:M
             C = sigmas(i)^2 * eye(d) + Ws{i}*Ws{i}';
             detC = det(C);
@@ -74,7 +71,7 @@ function ppca_mixture
                 likelihoods(n, i) = (2*pi)^(-d/2)*detC^(-1/2)*exp(-1/2*(T(n, :)' - mus(i, :)')'*invC*(T(n, :)' - mus(i, :)'));
             endfor
         endfor
-        % computing the joint probabilities (p(t_n|i))
+        % computing the joint probabilities (p(t_n, i))
         for i=1:M
             joint(:, i) = likelihoods(:, i) * priors(i);
         endfor
@@ -86,6 +83,9 @@ function ppca_mixture
         for n=1:N
             posteriors(n, :) = joint(n, :) / data_priors(n);
         endfor
+
+        % we went through the loop at least once
+        entered = true;
     endwhile
 
 
