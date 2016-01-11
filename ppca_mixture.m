@@ -90,31 +90,24 @@ function ppca_mixture
 
 
     % computing the latent variables
-    Xs = cell(M);
+    latent = cell(M);
     for i=1:M
-        Xs{i} = ppca_latent(T, Ws{i}, sigmas(i));
+        latent{i} = ppca_latent(T, Ws{i}, sigmas(i));
     endfor
     % selecting likely points for each ppca analyser
     for n=1:N
-        max = 0;
-        max_index = 0;
-        for i=1:M
-            if (posteriors(n, i) > max)
-                max_index = i;
-                max = posteriors(n, i);
-            endif
-        endfor
-        max_indexes(n) = max_index;
+        [~, i] = sort(posteriors(n, :), 'descend');
+        points_to_classes(n) = i(1);
     endfor
-    kept_Xs = cell(M);
-    kept_indexes = cell(M);
+    classes_to_points = cell(M);
+    classes_to_point_numbers = cell(M);
     for n=1:N
-        kept_Xs{max_indexes(n)}(:, end+1) = Xs{max_indexes(n)}(:, n);
-        kept_indexes{max_indexes(n)}(end+1) = n;
+        classes_to_points{points_to_classes(n)}(:, end+1) = latent{points_to_classes(n)}(:, n);
+        classes_to_point_numbers{points_to_classes(n)}(end+1) = n;
     endfor
 
     % display the results of the automatic classification
     for i=1:M
-        disp(kept_indexes{i});
+        disp(classes_to_point_numbers{i});
     endfor
 endfunction
