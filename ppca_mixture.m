@@ -28,9 +28,9 @@ function ppca_mixture
         new_mus = zeros(M, d);
         for i=1:M
             for n=1:N
-                new_mus(i, :) += posteriors(n, i) * T(n, :);
+                new_mus(i, :) = new_mus(i, :) + posteriors(n, i) * T(n, :);
             end
-            new_mus(i, :) /= sum(posteriors(:, i));
+            new_mus(i, :) = new_mus(i, :) / sum(posteriors(:, i));
         end
 
         % computing covariance matrices (S in text)
@@ -38,7 +38,7 @@ function ppca_mixture
         for i=1:M
             covariances{i} = zeros(d, d);
             for n=1:N
-                covariances{i} += posteriors(n, i)*(T(n, :)' - new_mus(i, :)')*(T(n, :)' - new_mus(i, :)')';
+                covariances{i} = covariances{i} + posteriors(n, i)*(T(n, :)' - new_mus(i, :)')*(T(n, :)' - new_mus(i, :)')';
             end
             covariances{i} = covariances{i} / (new_priors(i) * N);
         end
