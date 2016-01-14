@@ -13,11 +13,11 @@ function [W, sigma] = em_ppca_from_covariance(S, q)
         sigma_new = sqrt(1/d * trace(S - S*W*inv(M)*W_new'));
         if(abs(sigma_new - sigma) < epsilon && max(max(abs(W_new - W))) < epsilon)
             break;
-        endif
+        end
         W = W_new;
         sigma = sigma_new;
-    endwhile
+    end
     
     W = W_new;
     sigma = sigma_new;
-endfunction
+end

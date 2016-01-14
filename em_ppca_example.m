@@ -6,4 +6,4 @@ function em_ppca_example
     [W, sigma] = em_ppca_from_data(T, q);
     X = ppca_latent(T, W, sigma);
     ppca_plot2d(X);
-endfunction
+end
