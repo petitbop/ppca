@@ -7,10 +7,10 @@ function ppca_mixture
 
     % init
     % initializing the posteriors (p(i|t_n), indexed by (n, i). R in text)
+    classes = [3, 3, 3, 3, 2, 2, 3, 1, 3, 3, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2];
     for n=1:N
-        k = randi(M);
         for i=1:M
-            if(i==k)
+            if(i==classes(n))
                 posteriors(n, i) = 1;
             else
                 posteriors(n, i) = 0;
@@ -110,4 +110,6 @@ function ppca_mixture
     for i=1:M
         disp(classes_to_point_numbers{i});
     endfor
+
+    ppca_plot2d(classes_to_points{1});
 endfunction
