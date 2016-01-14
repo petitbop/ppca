@@ -5,10 +5,10 @@ function X = ppca_latent(T, W, sigma)
     M = W'*W + sigma^2 * eye(q);
     for j = 1:d
         mu(j) = mean(T(:,j));
-    endfor
+    end
     for i = 1:N
         Tnorm(i,:) = T(i,:) - mu;
-    endfor
+    end
 
     X = inv(M) * W' * Tnorm';
-endfunction
+end

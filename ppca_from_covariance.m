@@ -10,4 +10,4 @@ function [W, sigma] = ppca_from_covariance(S, q)
 
     sigma = sqrt(1/(d-q) * sum(lambda(q+1:d)));
     W = U * sqrt(L - sigma^2*eye(q));
-endfunction
+end
