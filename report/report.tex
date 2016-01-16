@@ -1,0 +1,23 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+
+\title{Report for ppca project}
+\author{Pierre Petitbon}
+
+\begin{document}
+
+\maketitle
+
+\section{Proof of the log-likelihood formula (4)}
+
+The samples $(t_{1}, \ldots, t_{N})$ are independent and identically distributed from a gaussian distribution with mean $\mu$ and covariance $C$. Thus,
+
+\begin{eqnarray*}
+p(t_{1}, \ldots, t_{N}) & = & \prod_{n=1}^N p(t_{i}) \\
+& = & ((2\pi)^d \abs{C})^{-\frac{N}{2}} \exp(-\frac{1}{2} \sum_{n=1}^N (t_{n}-\mu)^T C^{-1} (t_n-\mu)) \\
+\end{eqnarray*}
+
+\end{document}
